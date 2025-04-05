@@ -63,7 +63,14 @@
     }
 
     pre {
+      font-family: 'Fira Code', Consolas, 'Courier New', monospace;
       font-size: 1.25em;
+      line-height: 1.6;
+      background-color: #f4f4f4;
+      padding: 15px;
+      border: 1px solid #ccc;
+      border-radius: 5px;
+      overflow-x: auto;
     }
   </style>
 </head>
@@ -74,7 +81,7 @@
 
   <div class="deck" id="deck"></div>
 
-  <button id="shuffle">Shuffle Cards</button>
+  <button id="shuffle">Show Shuffle Steps</button>
   <button id="reset">Reset Deck</button>
   <button id="quickShuffle">Quick Shuffle</button>
 
@@ -83,7 +90,7 @@
     <h2>Fisher-Yates Algorithm in JavaScript</h2>
     <pre><code>
 function fisherYatesShuffle(array) {
-  let a = array.slice(); // create a shallow copy of the array
+  let a = structuredClone(array); // create a deep copy of the array
   for (let i = a.length - 1; i > 0; i--) {
     let j = Math.floor(Math.random() * (i + 1));
     [a[i], a[j]] = [a[j], a[i]];
@@ -114,7 +121,7 @@ function fisherYatesShuffle(array) {
       "Queen of Hearts"
     ];
 
-    let currentDeck = [...cards];
+    let currentDeck = structuredClone(cards);
     const deckElement = document.getElementById('deck');
     const logElement = document.getElementById('log');
 
@@ -149,7 +156,7 @@ function fisherYatesShuffle(array) {
       logElement.innerHTML = '<h2>Shuffle Steps:</h2>';
 
       // Create a copy of the current deck
-      const newDeck = [...currentDeck];
+      const newDeck = structuredClone(currentDeck);
 
       // Fisher-Yates algorithm with visualization
       for (let i = newDeck.length - 1; i > 0; i--) {
@@ -171,7 +178,7 @@ function fisherYatesShuffle(array) {
         [newDeck[i], newDeck[j]] = [newDeck[j], newDeck[i]];
 
         // Update the display
-        currentDeck = [...newDeck];
+        currentDeck = structuredClone(newDeck);
         renderDeck();
         await pause(800);
 
@@ -185,14 +192,14 @@ function fisherYatesShuffle(array) {
     // Quick shuffle without visualization steps
     function quickShuffleDeck() {
       // Create a copy of the current deck
-      const newDeck = [...currentDeck];
+      const newDeck = structuredClone(currentDeck);
       // Perform the Fisher-Yates shuffle without delays or logs
       for (let i = newDeck.length - 1; i > 0; i--) {
         const j = Math.floor(Math.random() * (i + 1));
         [newDeck[i], newDeck[j]] = [newDeck[j], newDeck[i]];
       }
       // Update the deck and re-render
-      currentDeck = [...newDeck];
+      currentDeck = structuredClone(newDeck);
       renderDeck();
       // Clear any previous log steps
       logElement.innerHTML = '';
@@ -239,7 +246,7 @@ function fisherYatesShuffle(array) {
     // Event listeners
     document.getElementById('shuffle').addEventListener('click', shuffleDeck);
     document.getElementById('reset').addEventListener('click', () => {
-      currentDeck = [...cards];
+      currentDeck = structuredClone(cards);
       renderDeck();
       logElement.innerHTML = '';
     });
