@@ -94,13 +94,13 @@ This section contains various implementations of shuffling algorithms in JavaScr
 function fisherYatesShuffle(array) {
   // Create a copy to avoid modifying the original
   const arrayCopy = [...array];
-  
+
   // Fisher-Yates algorithm
   for (let i = arrayCopy.length - 1; i > 0; i--) {
     const j = Math.floor(Math.random() * (i + 1));
     [arrayCopy[i], arrayCopy[j]] = [arrayCopy[j], arrayCopy[i]];
   }
-  
+
   return arrayCopy;
 }
 ```
@@ -116,13 +116,13 @@ This implementation has:
 function deepCopyShuffle(array) {
   // Create a deep copy using structuredClone
   const arrayCopy = structuredClone(array);
-  
+
   // Fisher-Yates algorithm
   for (let i = arrayCopy.length - 1; i > 0; i--) {
     const j = Math.floor(Math.random() * (i + 1));
     [arrayCopy[i], arrayCopy[j]] = [arrayCopy[j], arrayCopy[i]];
   }
-  
+
   return arrayCopy;
 }
 ```
@@ -135,16 +135,16 @@ This implementation is suitable when the array contains nested objects or arrays
 function functionalShuffle(array) {
   // Create a copy
   const result = [...array];
-  
+
   // Fisher-Yates algorithm with functional-style reduce
   return Array.from({ length: result.length })
     .reduce((acc) => {
       if (acc.length === 0) return acc;
-      
+
       const i = acc.length - 1;
       const j = Math.floor(Math.random() * (i + 1));
       [acc[i], acc[j]] = [acc[j], acc[i]];
-      
+
       return acc;
     }, result);
 }
@@ -156,11 +156,11 @@ function functionalShuffle(array) {
 function sortShuffle(array) {
   // Create a copy to avoid modifying the original
   const arrayCopy = [...array];
-  
+
   // INCORRECT: Using sort with random comparison
   // This produces biased results!
   arrayCopy.sort(() => Math.random() - 0.5);
-  
+
   return arrayCopy;
 }
 ```
@@ -236,38 +236,38 @@ Use this code to verify the quality of different shuffle implementations:
 function testShuffleDistribution(shuffleFunction, iterations = 1000000) {
   // Test with a small array [1, 2, 3]
   const testArray = [1, 2, 3];
-  
+
   // Track occurrences of each permutation
   const results = {};
-  
+
   // Perform many shuffles
   for (let i = 0; i < iterations; i++) {
     const shuffled = shuffleFunction([...testArray]);
     const key = shuffled.toString();
     results[key] = (results[key] || 0) + 1;
   }
-  
+
   // Calculate and display percentages
   console.log(`Distribution after ${iterations} shuffles:`);
-  
+
   const permutations = Object.keys(results);
   permutations.sort();
-  
+
   permutations.forEach(key => {
     const percentage = (results[key] / iterations * 100).toFixed(1);
     console.log(`${key}: ${percentage}%`);
   });
-  
+
   // Calculate standard deviation to measure bias
   const values = Object.values(results);
   const mean = values.reduce((sum, val) => sum + val, 0) / values.length;
   const squaredDiffs = values.map(val => Math.pow(val - mean, 2));
   const variance = squaredDiffs.reduce((sum, val) => sum + val, 0) / values.length;
   const stdDev = Math.sqrt(variance);
-  
+
   console.log(`Standard deviation: ${stdDev.toFixed(2)}`);
   console.log(`Ideal standard deviation for perfect shuffle: ${Math.sqrt(iterations * (1 - (1/values.length))).toFixed(2)}`);
-  
+
   return results;
 }
 
@@ -286,7 +286,7 @@ function testShuffleDistribution(shuffleFunction, iterations = 1000000) {
 function createShuffledDeck() {
   const suits = ['hearts', 'diamonds', 'clubs', 'spades'];
   const values = ['2', '3', '4', '5', '6', '7', '8', '9', '10', 'J', 'Q', 'K', 'A'];
-  
+
   // Create deck
   const deck = [];
   for (const suit of suits) {
@@ -294,7 +294,7 @@ function createShuffledDeck() {
       deck.push({ suit, value });
     }
   }
-  
+
   // Shuffle deck
   return fisherYatesShuffle(deck);
 }
@@ -306,10 +306,10 @@ function createShuffledDeck() {
 function createRandomizedQuiz(questions, numberOfQuestions) {
   // Shuffle all questions
   const shuffledQuestions = fisherYatesShuffle(questions);
-  
+
   // Take subset of questions
   const quizQuestions = shuffledQuestions.slice(0, numberOfQuestions);
-  
+
   // For each question, also shuffle its answer options
   return quizQuestions.map(question => {
     return {
@@ -324,7 +324,7 @@ function createRandomizedQuiz(questions, numberOfQuestions) {
 
 # Resources and Further Reading
 
-- Knuth, Donald E. "The Art of Computer Programming, Volume 2: Seminumerical Algorithms"
-- Fisher, R.A.; Yates, F. "Statistical tables for biological, agricultural and medical research"
+Here are some additional resources to deepen your understanding of shuffling algorithms:
+- [Fisher-Yates Shuffle on Wikipedia](https://en.wikipedia.org/wiki/Fisher%E2%80%93Yates_shuffle) - Detailed explanation and history
 - [Visualizing the Fisher-Yates Shuffle](https://bost.ocks.org/mike/shuffle/)
-- [Why the Fisher-Yates Shuffle Is Superior to sort(() => Math.random() - 0.5)](https://medium.com/@nitinpatel_20236/how-to-shuffle-correctly-shuffle-an-array-in-javascript-15ea3f84bfb)
+- [How to shuffle an array in JavaScript](https://www.youtube.com/watch?v=5sNGqsMpW1E) - Video explanation

@@ -4,6 +4,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="shortcut icon" href="cards/red_joker.svg">
   <title>Fisher-Yates Card Shuffle</title>
   <style>
     body {
@@ -91,7 +92,7 @@
     <pre><code>
 function fisherYatesShuffle(array) {
   let a = structuredClone(array); // create a deep copy of the array
-  for (let i = a.length - 1; i > 0; i--) {
+  for (let i = a.length - 1; i &gt; 0; i--) {
     let j = Math.floor(Math.random() * (i + 1));
     [a[i], a[j]] = [a[j], a[i]];
   }
