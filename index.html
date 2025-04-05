@@ -72,6 +72,7 @@
 
   <button id="shuffle">Shuffle Cards</button>
   <button id="reset">Reset Deck</button>
+  <button id="quickShuffle">Quick Shuffle</button>
 
   <div id="log"></div>
 
@@ -164,6 +165,22 @@
       logElement.innerHTML += `<div class="step">Shuffle complete!</div>`;
     }
 
+    // Quick shuffle without visualization steps
+    function quickShuffleDeck() {
+      // Create a copy of the current deck
+      const newDeck = [...currentDeck];
+      // Perform the Fisher-Yates shuffle without delays or logs
+      for (let i = newDeck.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [newDeck[i], newDeck[j]] = [newDeck[j], newDeck[i]];
+      }
+      // Update the deck and re-render
+      currentDeck = [...newDeck];
+      renderDeck();
+      // Clear any previous log steps
+      logElement.innerHTML = '';
+    }
+
     // Helper function to add pause
     function pause(ms) {
       return new Promise(resolve => setTimeout(resolve, ms));
@@ -209,6 +226,7 @@
       renderDeck();
       logElement.innerHTML = '';
     });
+    document.getElementById('quickShuffle').addEventListener('click', quickShuffleDeck);
   </script>
 </body>
 
