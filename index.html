@@ -61,6 +61,10 @@
       border-top: 1px solid #ddd;
       padding-top: 10px;
     }
+
+    pre {
+      font-size: 1.25em;
+    }
   </style>
 </head>
 
@@ -75,6 +79,19 @@
   <button id="quickShuffle">Quick Shuffle</button>
 
   <div id="log"></div>
+  <div id="codeSection">
+    <h2>Fisher-Yates Algorithm in JavaScript</h2>
+    <pre><code>
+function fisherYatesShuffle(array) {
+  let a = array.slice(); // create a shallow copy of the array
+  for (let i = a.length - 1; i > 0; i--) {
+    let j = Math.floor(Math.random() * (i + 1));
+    [a[i], a[j]] = [a[j], a[i]];
+  }
+  return a;
+}
+    </code></pre>
+  </div>
 
   <script>
     // Simple deck of 6 cards for demonstration
