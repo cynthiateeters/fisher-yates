@@ -1,0 +1,215 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Fisher-Yates Card Shuffle</title>
+  <style>
+    body {
+      font-family: system-ui, -apple-system, sans-serif;
+      max-width: 800px;
+      margin: 0 auto;
+      padding: 20px;
+    }
+
+    .deck {
+      display: flex;
+      gap: 10px;
+      margin: 20px 0;
+    }
+
+    .card {
+      width: 80px;
+      height: 120px;
+      border: 1px solid #ddd;
+      border-radius: 5px;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      transition: transform 0.5s;
+    }
+
+    .card img {
+      width: 80px;
+      height: 120px;
+    }
+
+    button {
+      background: #0056b3;
+      color: white;
+      border: none;
+      padding: 10px 20px;
+      border-radius: 5px;
+      cursor: pointer;
+      margin-right: 10px;
+    }
+
+    .step {
+      margin: 10px 0;
+      padding: 10px;
+      border-left: 3px solid #0056b3;
+      background: #f8f9fa;
+    }
+
+    .card.highlight {
+      box-shadow: 0 0 0 3px #ff9800;
+    }
+
+    #log {
+      margin-top: 20px;
+      border-top: 1px solid #ddd;
+      padding-top: 10px;
+    }
+  </style>
+</head>
+
+<body>
+  <h1>Fisher-Yates Card Shuffle</h1>
+  <p>A visual demonstration of the Fisher-Yates shuffle algorithm using a small deck of cards.</p>
+
+  <div class="deck" id="deck"></div>
+
+  <button id="shuffle">Shuffle Cards</button>
+  <button id="reset">Reset Deck</button>
+
+  <div id="log"></div>
+
+  <script>
+    // Simple deck of 6 cards for demonstration
+    const cards = [
+      "cards/2_of_clubs.svg",
+      "cards/5_of_hearts.svg",
+      "cards/10_of_diamonds.svg",
+      "cards/king_of_spades.svg",
+      "cards/ace_of_clubs.svg",
+      "cards/queen_of_hearts.svg"
+    ];
+
+    // Display card names instead of SVGs if images not available
+    const cardNames = [
+      "2 of Clubs",
+      "5 of Hearts",
+      "10 of Diamonds",
+      "King of Spades",
+      "Ace of Clubs",
+      "Queen of Hearts"
+    ];
+
+    let currentDeck = [...cards];
+    const deckElement = document.getElementById('deck');
+    const logElement = document.getElementById('log');
+
+    // Initialize the deck display
+    function renderDeck() {
+      deckElement.innerHTML = '';
+      currentDeck.forEach((card, index) => {
+        const cardElement = document.createElement('div');
+        cardElement.className = 'card';
+        cardElement.dataset.index = index;
+
+        // Try to use SVG images if available, otherwise use text
+        try {
+          const img = document.createElement('img');
+          img.src = card;
+          img.alt = cardNames[cards.indexOf(card)];
+          img.onerror = () => {
+            cardElement.textContent = cardNames[cards.indexOf(card)];
+          };
+          cardElement.appendChild(img);
+        } catch (e) {
+          cardElement.textContent = cardNames[cards.indexOf(card)];
+        }
+
+        deckElement.appendChild(cardElement);
+      });
+    }
+
+    // Fisher-Yates shuffle with visualization
+    async function shuffleDeck() {
+      // Clear previous logs
+      logElement.innerHTML = '<h2>Shuffle Steps:</h2>';
+
+      // Create a copy of the current deck
+      const newDeck = [...currentDeck];
+
+      // Fisher-Yates algorithm with visualization
+      for (let i = newDeck.length - 1; i > 0; i--) {
+        // Highlight current position
+        highlightCard(i);
+        await pause(500);
+
+        // Generate random index
+        const j = Math.floor(Math.random() * (i + 1));
+
+        // Log the step
+        logStep(i, j, newDeck);
+
+        // Highlight card to swap with
+        highlightCard(j);
+        await pause(500);
+
+        // Swap elements
+        [newDeck[i], newDeck[j]] = [newDeck[j], newDeck[i]];
+
+        // Update the display
+        currentDeck = [...newDeck];
+        renderDeck();
+        await pause(800);
+
+        // Remove highlights
+        clearHighlights();
+      }
+
+      logElement.innerHTML += `<div class="step">Shuffle complete!</div>`;
+    }
+
+    // Helper function to add pause
+    function pause(ms) {
+      return new Promise(resolve => setTimeout(resolve, ms));
+    }
+
+    // Highlight a card
+    function highlightCard(index) {
+      clearHighlights();
+      const cards = document.querySelectorAll('.card');
+      if (cards[index]) {
+        cards[index].classList.add('highlight');
+      }
+    }
+
+    // Clear all highlights
+    function clearHighlights() {
+      document.querySelectorAll('.card').forEach(card => {
+        card.classList.remove('highlight');
+      });
+    }
+
+    // Log a step in the shuffle
+    function logStep(i, j, deck) {
+      const step = document.createElement('div');
+      step.className = 'step';
+
+      if (i === j) {
+        step.textContent = `Step ${deck.length - i}: Selected position ${i} and random position ${j} (same position, no swap needed)`;
+      } else {
+        step.textContent = `Step ${deck.length - i}: Swapped card at position ${i} with card at random position ${j}`;
+      }
+
+      logElement.appendChild(step);
+    }
+
+    // Initialize
+    renderDeck();
+
+    // Event listeners
+    document.getElementById('shuffle').addEventListener('click', shuffleDeck);
+    document.getElementById('reset').addEventListener('click', () => {
+      currentDeck = [...cards];
+      renderDeck();
+      logElement.innerHTML = '';
+    });
+  </script>
+</body>
+
+</html>
